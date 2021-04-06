@@ -37,13 +37,16 @@ end
 it { is_expected.to respond_to(:touch_in) }
 
 it "returns a true value when card touches in" do
-  expect(subject.touch_in).to be true
+  subject.touch_in
+  expect(subject).to be_in_journey
 end
 
 it { is_expected.to respond_to(:touch_out) }
 
 it "returns a true value when card touches out" do
-  expect(subject.touch_out).to be true
+  subject.touch_in
+  subject.touch_out
+  expect(subject).not_to be_in_journey
 end
 
 end
