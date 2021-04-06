@@ -26,4 +26,11 @@ it "does not allow a intial value over £90 to be topped up" do
   expect { subject.top_up(91) }.to raise_error "top up value can not be over #{max_value}"
 end
 
+it {is_expected.to respond_to(:deduct).with(1).argument }
+
+it "deducts 10 pounds" do
+  subject.top_up(15)
+  subject.deduct(10)
+  expect(subject.balance).to eq(5)
+end  
 end
