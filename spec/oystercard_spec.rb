@@ -21,4 +21,9 @@ it "does not allow more than £90 to be topped up" do
   expect { subject.top_up(1) }.to raise_error "max balance #{max_balance} reached"
 end
 
+it "does not allow a intial value over £90 to be topped up" do
+  max_value = Oystercard::MAX_BALANCE
+  expect { subject.top_up(91) }.to raise_error "top up value can not be over #{max_value}"
+end
+
 end
