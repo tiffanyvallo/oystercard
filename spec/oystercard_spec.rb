@@ -33,4 +33,17 @@ it "deducts 10 pounds" do
   subject.deduct(10)
   expect(subject.balance).to eq(5)
 end  
+
+it { is_expected.to respond_to(:touch_in) }
+
+it "returns a true value when card touches in" do
+  expect(subject.touch_in).to be true
+end
+
+it { is_expected.to respond_to(:touch_out) }
+
+it "returns a true value when card touches out" do
+  expect(subject.touch_out).to be true
+end
+
 end

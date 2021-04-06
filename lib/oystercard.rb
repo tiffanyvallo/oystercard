@@ -17,5 +17,13 @@ class Oystercard
   def deduct(value)
     @balance -= value
   end
-   
+  
+  def touch_in
+    true
+  end
+  
+  def touch_out
+    true
+  end
+
 end
