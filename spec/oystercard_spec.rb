@@ -2,6 +2,8 @@ require 'oystercard'
 
 describe Oystercard do
 
+  let (:entry_station) { double('entry_station') }
+
   it { is_expected.to be_an_instance_of Oystercard }
 
   it "can show a balance" do
@@ -28,7 +30,7 @@ describe Oystercard do
 
   it "returns a true value when card touches in" do
     subject.top_up(Oystercard::MAX_BALANCE)
-    subject.touch_in
+    subject.touch_in(entry_station)
     expect(subject).to be_in_journey
   end
 
@@ -36,19 +38,36 @@ describe Oystercard do
 
   it "returns a true value when card touches out" do
     subject.top_up(Oystercard::MAX_BALANCE)
-    subject.touch_in
+    subject.touch_in(entry_station)
     subject.touch_out
-    expect(subject).not_to be_in_journey
+    expect(subject.in_journey?).to be_falsey
   end
 
   it "returns a fail message if balance is less than £1" do
-    expect { subject.touch_in }.to raise_error "Balance is less than £1"
+    expect { subject.touch_in(entry_station) }.to raise_error "Balance is less than £1"
   end
 
   it "deducts £1 from the balance once card touches out" do
     subject.top_up(1)
-    subject.touch_in
+    subject.touch_in(entry_station)
     expect { subject.touch_out }.to change{subject.balance}.by(-Oystercard::MIN_VALUE)
   end
 
-end
+  it "has a nil entry station at the start" do
+    expect(subject.entry_station).to be_nil
+  end
+
+  it "has an entry station when card touches in" do
+    subject.top_up(1)
+    subject.touch_in(entry_station)
+    expect(subject.entry_station).to eq(entry_station)
+  end
+
+  it "sets entry statiom to nil when card touches out" do
+    subject.top_up(1)
+    subject.touch_in(entry_station)
+    subject.touch_out
+    expect(subject.entry_station).to be_nil
+  end
+
+  end
