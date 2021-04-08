@@ -3,6 +3,8 @@ require 'oystercard'
 describe Oystercard do
 
   let (:entry_station) { double('entry_station') }
+  let (:exit_station) { double('exit_station') }
+  let(:journey){ {entry_station: entry_station, exit_station: exit_station} }
 
   it { is_expected.to be_an_instance_of Oystercard }
 
@@ -39,7 +41,7 @@ describe Oystercard do
   it "returns a true value when card touches out" do
     subject.top_up(Oystercard::MAX_BALANCE)
     subject.touch_in(entry_station)
-    subject.touch_out
+    subject.touch_out(exit_station)
     expect(subject.in_journey?).to be_falsey
   end
 
@@ -50,7 +52,7 @@ describe Oystercard do
   it "deducts £1 from the balance once card touches out" do
     subject.top_up(1)
     subject.touch_in(entry_station)
-    expect { subject.touch_out }.to change{subject.balance}.by(-Oystercard::MIN_VALUE)
+    expect { subject.touch_out(exit_station) }.to change{subject.balance}.by(-Oystercard::MIN_VALUE)
   end
 
   it "has a nil entry station at the start" do
@@ -66,8 +68,25 @@ describe Oystercard do
   it "sets entry statiom to nil when card touches out" do
     subject.top_up(1)
     subject.touch_in(entry_station)
-    subject.touch_out
+    subject.touch_out(exit_station)
     expect(subject.entry_station).to be_nil
   end
 
+  it 'defauts the jouney history to empty' do
+    expect(subject.journey_history).to be_empty
   end
+
+  it 'touch out stores the exit station value' do 
+    subject.touch_out(exit_station)
+    expect(subject.exit_station).to eq(exit_station)
+  end
+
+  it 'stores the journey in journey history' do
+    subject.top_up(10)
+    subject.touch_in(entry_station)
+    subject.touch_out(exit_station)
+    p subject.journey_history
+    expect(subject.journey_history).to include(journey)
+  end 
+
+end
