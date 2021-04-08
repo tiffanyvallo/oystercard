@@ -24,14 +24,6 @@ describe Oystercard do
     expect { subject.top_up(91) }.to raise_error "top up value can not be over #{Oystercard::MAX_BALANCE}"
   end
 
-  it {is_expected.to respond_to(:deduct).with(1).argument }
-
-  it "deducts 10 pounds" do
-    subject.top_up(15)
-    subject.deduct(10)
-    expect(subject.balance).to eq(5)
-  end  
-
   it { is_expected.to respond_to(:touch_in) }
 
   it "returns a true value when card touches in" do
@@ -51,6 +43,12 @@ describe Oystercard do
 
   it "returns a fail message if balance is less than £1" do
     expect { subject.touch_in }.to raise_error "Balance is less than £1"
+  end
+
+  it "deducts £1 from the balance once card touches out" do
+    subject.top_up(1)
+    subject.touch_in
+    expect { subject.touch_out }.to change{subject.balance}.by(-Oystercard::MIN_VALUE)
   end
 
 end
