@@ -49,4 +49,8 @@ describe Oystercard do
     expect(subject).not_to be_in_journey
   end
 
+  it "returns a fail message if balance is less than £1" do
+    expect { subject.touch_in }.to raise_error "Balance is less than £1"
+  end
+
 end
